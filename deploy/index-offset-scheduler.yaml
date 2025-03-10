@@ -273,7 +273,7 @@ spec:
       containers:
         - name: scheduler
           # change your image
-          image: lhb6540/index-offset-scheduler:latest
+          image: openkruise/kruise-game-scheduler-index-offset:latest
           imagePullPolicy: Always
           command:
             - /app/index-offset-scheduler
