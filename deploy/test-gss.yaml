@@ -1,0 +1,24 @@
+apiVersion: game.kruise.io/v1alpha1
+kind: GameServerSet
+metadata:
+  name: test
+  namespace: kube-system
+spec:
+  serviceName: ""
+  replicas: 10
+  gameServerTemplate:
+    metadata:
+      labels:
+        app: test
+      # annotations:
+        # index-offset-scheduler/scheduler-selector: "app=test"
+    spec:
+      # nodeSelector:
+      #   game: "true"
+      #   env: release
+      # imagePullSecrets:
+      #   - name: <your image pull secret>
+      schedulerName: index-offset-scheduler
+      containers:
+        - name: test
+          image: nginx
