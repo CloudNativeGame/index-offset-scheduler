@@ -78,7 +78,7 @@ image: nginx
  ```
 - Compatibility: [Scheduler Configuration](https://kubernetes.io/docs/reference/scheduling/config/) is already in stable state in Kubernetes version 1.25, and has been tested on clusters of versions 1.25 and 1.31 to work properly.
 
-### Working principle
+## Working principle
 This document shows how the custom scheduler works: [Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/).
 The core working principle of index-offset-scheduler is as follows:
 Suppose there are 3 nodes in the cluster: n1, n2, n3. At this time, there is no pod of the specified GameServerSet on each node. And the status of these 3 nodes is consistent, that is, the scores of other default plugins are consistent.
@@ -131,7 +131,7 @@ n3: 3 = 7/2
 ## Experimental features:
 - index-offset-scheduler provides support for pods that are not managed by StatefulSet/GameServerSet. If you manage multiple pods by writing multiple pod configurations and keep the pod naming in the StatefulSet style, you can achieve a similar effect by adding an annotation with the key index-offset-scheduler/scheduler-selector and the value pod labels to the pod annotation.
 
-### Development Guide
+## Development Guide
 The core scoring logic is located in pkg/scheduler.go. If you want to improve the logic:
 ```
 git clone <repo>

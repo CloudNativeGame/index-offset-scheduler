@@ -81,7 +81,7 @@ spec:
 - 兼容性: [Scheduler Configuration](https://kubernetes.io/docs/reference/scheduling/config/) 在kubernetes的1.25版本已经处于stable状态，已经在1.25和1.31版本的集群上测试可以正常工作。
 
 
-### 工作原理
+## 工作原理
 这个文档展示了自定义调度器的工作原理: [Configure Multiple Schedulers](https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/)。
 index-offset-scheduler的核心工作原理如下:   
 假如集群中有3个节点: n1、n2、n3。此时每个节点上都没有指定的GameServerSet的pod。并且这3个节点的状态一致，即其他默认插件的打分一致。
@@ -136,7 +136,7 @@ n3: 3 = 7/2
   pod的命名符合StatefulSet的风格。通过在pod的注解中添加key为index-offset-scheduler/scheduler-selector，值为pod的labels的注解，可以
   实现类似的效果。
 
-### 开发指引
+## 开发指引
 核心的打分逻辑位于pkg/scheduler.go，如果你想要改进逻辑:
 ```
 git clone <repo>
