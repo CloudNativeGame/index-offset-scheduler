@@ -1,5 +1,5 @@
-# 构建阶段
-FROM golang:1.22 as builder
+# 构建阶段（需 Go >= 1.24，与 go.mod 一致）
+FROM golang:1.24 AS builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY . .
 
 # 安装依赖并构建
 # RUN CGO_ENABLED=0 GOOS=linux GOPROXY=https://goproxy.cn,direct GOARCH=amd64 go build -ldflags="-w -s" -o build/index-offset-scheduler ./cmd/main.go
-RUN CGO_ENABLED=0 GOOS=linux  GOARCH=amd64 go build -ldflags="-w -s" -o build/index-offset-scheduler ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o build/index-offset-scheduler ./cmd/main.go
 # 最终阶段
 FROM alpine:3.18
 

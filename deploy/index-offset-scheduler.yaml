@@ -278,6 +278,7 @@ spec:
           command:
             - /app/index-offset-scheduler
             - --config=/etc/kubernetes/scheduler-config.yaml
+            # 日志级别：--v=2 常规，--v=5 含评分 Info，--v=6 含 debugLog（压缩因子、逐节点归一化等）
             - --v=5
           resources:
             requests:

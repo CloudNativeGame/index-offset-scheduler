@@ -147,31 +147,31 @@ func (p *CustomScheduler) ScoreExtensions() framework.ScoreExtensions {
 // NormalizeScore implements framework.ScoreExtensions
 func (*CustomScheduler) NormalizeScore(ctx context.Context, state *framework.CycleState, p *v1.Pod, scores framework.NodeScoreList) *framework.Status {
 	klog.Infof("NormalizeScore is called, Now NodeScoreList: %v", scores)
-	// 在此处对分数进行归一化处理，如果分数为0，最后变为最大值100。
-	// 获取所有不为0的分数，取最大的分数
-	// 逐渐测试一个压缩比例，使得最大的分数能压缩到0-100之间
-	// 将这个比例应用到所有不为100的分数上
-	maxDiff := int64(0)
+	// 约定：最终评分 100 只给初始评分为 0 的节点（无匹配 pod，最优）；初始非零的压缩后必须 < 100。
+	// 压缩因子取 maxScore/100+1，使 maxScore/compress < 100，保证非零分数归一化后不会变成 100。
+	var maxScore int64
 	for _, nodeScore := range scores {
-		if nodeScore.Score > maxDiff {
-			maxDiff = nodeScore.Score
+		if nodeScore.Score > maxScore {
+			maxScore = nodeScore.Score
 		}
 	}
-	if maxDiff == 0 {
+	if maxScore == 0 {
+		// 全部为 0，都置为 100
+		for i := range scores {
+			scores[i].Score = 100
+		}
+		klog.Infof("NormalizeScore is called, After Normalize, NodeScoreList: %v", scores)
 		return nil
 	}
-	compress := int64(1)
-	for maxDiff > 100 {
-		compress = compress * 2
-		maxDiff = maxDiff / compress
-	}
-	debugLog("NormalizeScore is called, maxDiff: %v, compress: %v", maxDiff, compress)
-	for i, NodeScore := range scores {
-		if NodeScore.Score == 0 {
+	// 除以 100 取整 + 1：保证非零分数压缩后严格小于 100
+	compress := maxScore/100 + 1
+	debugLog("NormalizeScore is called, maxScore: %v, compress: %v", maxScore, compress)
+	for i, nodeScore := range scores {
+		if nodeScore.Score == 0 {
 			scores[i].Score = 100
 		} else {
-			scores[i].Score = int64(NodeScore.Score / compress)
-			debugLog("After Normalize, NodeScore %s is : %v %v", scores[i].Name, scores[i].Score, NodeScore.Score)
+			scores[i].Score = nodeScore.Score / compress
+			debugLog("After Normalize, NodeScore %s is : %v %v", scores[i].Name, scores[i].Score, nodeScore.Score)
 		}
 	}
 	klog.Infof("NormalizeScore is called, After Normalize, NodeScoreList: %v", scores)
